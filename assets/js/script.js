@@ -1,11 +1,10 @@
 // Define variables for elements
 var highScoreEl = document.getElementById("highscore");
+var timerEl = document.querySelector("#timer");
 var startquizBtn = document.querySelector("#startquiz"); 
 var olEl = document.querySelector("ol");
 var titleEl = document.querySelector(".title");
 var infoEl = document.querySelector("#info"); 
-var timerEl = document.querySelector("#timer");
-//var timeEl = document.querySelector("#time");
 var messageEl = document.querySelector("#message");
 var postscoreBtn = document.querySelector("#post-score");
 var initialsEl = document.querySelector(".initials"); 
@@ -37,12 +36,14 @@ const initText = "Try to answer the following code-related questions within the 
 
 // Start quiz screen
 function initialQuiz(){   
-    wrongAnswerCounter = 0;
+    //wrongAnswerCounter = 0;
+    timeLeft = 0;
     titleEl.innerHTML = h1Text;    
     infoEl.innerHTML = initText;
-    timerEl.innerHTML = timeText;
+    timerEl.innerHTML = timeText + timeLeft;
     olEl.innerHTML = "";
     startquizBtn.setAttribute("style",  "display:block;");
+    startquizBtn.setAttribute("class", "button");
     highScoresPanelEl.innerHTML = "";
     timeLeft =  quiz.length * 10;
     
@@ -57,16 +58,23 @@ function renderQuestion(index) {
     var quizQuest = quiz[index];
     infoEl.innerHTML = quizQuest.question;
     var choices = quizQuest.choices;
-    // Display multiple question choices
+    var count = 0;
+    // Display multiple choices 
     for (var i = 0; i < choices.length;  i++ ) {
         var choice = choices[i]; 
         var li = document.createElement("li"); 
-        li.textContent = choice;
-        li.setAttribute("style", "background-color: red;")
+        li.setAttribute("style", "padding: 5px;");
+        var a = document.createElement("a");
+        a.setAttribute("href", "#");
+        a.setAttribute("style", "background-color: lightskyblue; text-decoration: none; color: black;")
+        count++;
+        a.textContent = count + ".  " + choice;
+        //li.textContent = choice;
+        li.appendChild(a);
         if (choice === quizQuest.answer) {
-            li.setAttribute("data-answer", "correct");
+            a.setAttribute("data-answer", "correct");
         } else {
-            li.setAttribute("data-answer", "wrong");
+            a.setAttribute("data-answer", "wrong");
         }
         olEl.appendChild(li);
     } 
@@ -108,8 +116,10 @@ function renderquizscores() {
     infoEl.innerHTML = "";
     timerEl.innerHTML = "";
     highScoresPanelEl.innerHTML = "";
+
     titleEl.innerHTML = "Highscores";
 
+    // Create DOM elemts
     var highscoreInfoEl = document.createElement("p");
     highscoreInfoEl.setAttribute("class", "highscoreInfo");
     
@@ -125,7 +135,7 @@ function renderquizscores() {
     highScoresPanelEl.appendChild(goBackBtn);
     highScoresPanelEl.appendChild(clearHighScoresBtn);
 
-    // Get the stored values 
+    // Get the stored value values 
     var myInitials = localStorage.getItem("initials");
     var score = localStorage.getItem("score");
 
@@ -158,6 +168,8 @@ goBackBtn.addEventListener("click", function(){
     initialQuiz();
 });
 
+
+// Add event click to clearHighScoresBtn
 clearHighScoresBtn.addEventListener("click", function(){
 
     localStorage.removeItem('initials');
@@ -173,13 +185,12 @@ highScoreEl.addEventListener("click", function(event){
     renderquizscores();
 });
 
-// Attach event listener to final post score  button
+
+// Attach event listener to postscoreBtn element
 postscoreBtn.addEventListener("click", function(event){
     event.preventDefault();
 
     var myInitials = document.querySelector("#initials-input").value; 
-
-    alert("Initials: " + myInitials);
 
     if (myInitials === ""){
       alert("Initials can not be blank");
@@ -216,6 +227,7 @@ olEl.addEventListener("click", function(event){
             renderQuestion(idx);
         } else {
             clearInterval(timeInterval);
+            clearTimeout(myTimeout);
             if (timeLeft < 0) {
                 timeLeft = 0   
             }
@@ -224,20 +236,6 @@ olEl.addEventListener("click", function(event){
         }
         
     }, 500);
-
-    /** 
-    idx++;
-    if (idx < quiz.length) {
-        renderQuestion(idx);
-    } else {
-        clearInterval(timeInterval);
-        if (timeLeft < 0) {
-            timeLeft = 0   
-        }
-        timeEl.innerHTML = timeLeft;
-        finalScore();
-    }
-    */  
 
 });
 
