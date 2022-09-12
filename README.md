@@ -11,7 +11,7 @@ N/A
 
 ## Usage
 
-To use this app, first you  need to enter the folowin URL into your browser and hit enter:
+To use this app, first you  need to enter the following URL into your browser and hit enter:
 
 Then, you will be presented with the first screen which has some information to read and the start quiz button that you can click on to start the quiz. Also there is a timer that will start running after  you click the start quiz button. At the top left there is a link to bring you to a screen where you can view the scores if there are any.
 
@@ -19,7 +19,7 @@ After you click the start quiz button, there will be a series of multiple choice
 
 Then you will presented with another screen that will show you your final score. You will have to enter your initials to save your score.
 
-The final screen is a screen tha shows your scores.  There are two buttons in this screen that you can click. One to exit the screen and the other to clear up the scores.
+The final screen is a screen that shows your scores.  There are two buttons in this screen that you can click. One to exit the screen and the other to clear up the scores.
 
 Screenshots:
 

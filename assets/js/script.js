@@ -21,31 +21,31 @@ var wrongAnswerCounter = 0;
 var timeInterval;
 
 // Array to hold the multiple choice questions
-var quiz = [{question: "Commonly used data type do not include:", choices: ["strings", "boolleans", "alerts", "numbers"], answer: "alerts"},
+var quiz = [{question: "Commonly used data type do not include:", choices: ["strings", "booleans", "alerts", "numbers"], answer: "alerts"},
             {question: "The condition in an if/else statement is enclosed within ___.", choices: ["quotes", "curly brackets", "parenthesis", "square brackets"], answer: "parenthesis"},
             {question: "Arrays in JavaScript can be used to store ___.", choices: ["numbers and strings", "other arrays", "booleans", "all of the above"], answer: "all of the above"},
-            {question: "String values must be enclosed within ___ when being assigned to variables.", choices: ["commas", "curly brackets", "quotes", "parentesis"], answer: "quotes"},
+            {question: "String values must be enclosed within ___ when being assigned to variables.", choices: ["commas", "curly brackets", "quotes", "parenthesis"], answer: "quotes"},
     ]
 
 
 // Type const variables
 const timeText = "Time: ";
+const scoreText = "View highscore";
 const h1Text = "Coding Quiz Challenge";
-const initText = "Try to answer the following code-related questions within the time limit. keep in mind that incorect answers will penalize your score/time by ten seconds!"
+const initText = "Try to answer the following code-related questions within the time limit. Keep in mind that incorect answers will penalize your score/time by ten seconds!"
 
 
 // Start quiz screen
 function initialQuiz(){   
-    //wrongAnswerCounter = 0;
-    timeLeft = 0;
+    timeLeft =  quiz.length * 15;
     titleEl.innerHTML = h1Text;    
     infoEl.innerHTML = initText;
+    highScoreEl.innerHTML= scoreText;
     timerEl.innerHTML = timeText + timeLeft;
     olEl.innerHTML = "";
     startquizBtn.setAttribute("style",  "display:block;");
     startquizBtn.setAttribute("class", "button");
-    highScoresPanelEl.innerHTML = "";
-    timeLeft =  quiz.length * 10;
+    highScoresPanelEl.innerHTML = ""; 
     
 }
 
@@ -95,10 +95,11 @@ function initializeElements() {
     olEl.innerHTML = "";
 
     //inititalize message element
-    messageEl.innerHTML = "";
-    
+    messageEl.innerHTML = ""; 
 
 }
+
+
 // Display final score page
 function finalScore() {
     initializeElements();
@@ -107,6 +108,7 @@ function finalScore() {
     var initialsEl = document.querySelector(".initials");
     initialsEl.setAttribute("style", "display: block;");
     postscoreBtn.setAttribute("style", "display: block;");
+    document.querySelector("#initials-input").value = "";
 
 }
 // Display Highscores page
@@ -116,6 +118,7 @@ function renderquizscores() {
     infoEl.innerHTML = "";
     timerEl.innerHTML = "";
     highScoresPanelEl.innerHTML = "";
+    highScoreEl.innerHTML = "";
 
     titleEl.innerHTML = "Highscores";
 
@@ -148,7 +151,6 @@ function renderquizscores() {
 // Start timer
 function startTimer(){
 
-    timeLeft =  quiz.length * 10;
     timeInterval = setInterval(function(){
         
         if (timeLeft > 0){
@@ -161,7 +163,7 @@ function startTimer(){
             finalScore();
         }
 
-    }, 2000)
+    }, 1000)
 }
 
 goBackBtn.addEventListener("click", function(){
@@ -181,6 +183,10 @@ clearHighScoresBtn.addEventListener("click", function(){
 
 // Attach event listener to highscore paragraph element
 highScoreEl.addEventListener("click", function(event){
+    // stop the time interval in case is on
+    if(timeInterval) {
+        clearInterval(timeInterval);
+    }
     initializeElements();
     renderquizscores();
 });
@@ -193,8 +199,9 @@ postscoreBtn.addEventListener("click", function(event){
     var myInitials = document.querySelector("#initials-input").value; 
 
     if (myInitials === ""){
-      alert("Initials can not be blank");
+        alert("Initials can not be blank");
     } else {
+        myInitials = myInitials.toUpperCase();
         // store score to local storage
         localStorage.setItem("initials", myInitials);
         localStorage.setItem("score", timeLeft);
@@ -206,8 +213,14 @@ postscoreBtn.addEventListener("click", function(event){
 // Attach event listener to <ol> element
 olEl.addEventListener("click", function(event){
     var element = event.target;
+
+    // Return if element is not a link 
+    if (element.matches("a") === false){
+        return;
+    }
+       
     var myanswer = element.dataset.answer; 
-    
+       
     // Subtract ten from timer for every wrong question 
     if (myanswer === "wrong") {
         timeLeft = timeLeft - 10;
