@@ -21,10 +21,24 @@ var wrongAnswerCounter = 0;
 var timeInterval;
 
 // Array to hold the multiple choice questions
-var quiz = [{question: "Commonly used data type do not include:", choices: ["strings", "booleans", "alerts", "numbers"], answer: "alerts"},
-            {question: "The condition in an if/else statement is enclosed within ___.", choices: ["quotes", "curly brackets", "parenthesis", "square brackets"], answer: "parenthesis"},
-            {question: "Arrays in JavaScript can be used to store ___.", choices: ["numbers and strings", "other arrays", "booleans", "all of the above"], answer: "all of the above"},
-            {question: "String values must be enclosed within ___ when being assigned to variables.", choices: ["commas", "curly brackets", "quotes", "parenthesis"], answer: "quotes"},
+var quiz = [{question: "What operator is used to assign a value to a declared variable?", 
+            choices: ["Colon (:)", "Equal sign (=)", "Question mark (?)", "Double-equal (==)"], 
+            answer: "Equal sign (=)"},
+            {question: "How do we declare a conditional statement in JavaScript?", 
+            choices: ["while loop", "for each", "if...else", "for loop"], 
+            answer:"if...else"},
+            {question: "Commonly used data type do not include:", 
+            choices: ["strings", "booleans", "alerts", "numbers"], 
+            answer: "alerts"},
+            {question: "The condition in an if/else statement is enclosed within ___.", 
+            choices: ["quotes", "curly brackets", "parenthesis", "square brackets"], 
+            answer: "parenthesis"},
+            {question: "Arrays in JavaScript can be used to store ___.", 
+            choices: ["numbers and strings", "other arrays", "booleans", "all of the above"], 
+            answer: "all of the above"},
+            {question: "String values must be enclosed within ___ when being assigned to variables.", 
+            choices: ["commas", "curly brackets", "quotes", "parenthesis"], 
+            answer: "quotes"}
     ]
 
 
@@ -37,7 +51,7 @@ const initText = "Try to answer the following code-related questions within the 
 
 // Start quiz screen
 function initialQuiz(){   
-    timeLeft =  quiz.length * 15;
+    timeLeft =  quiz.length * 12;
     titleEl.innerHTML = h1Text;    
     infoEl.innerHTML = initText;
     highScoreEl.innerHTML= scoreText;
@@ -52,7 +66,7 @@ function initialQuiz(){
 
 function renderQuestion(index) {
     // clean uo the render screen 
-    messageEl.textContent = "The answer is: ";
+    //messageEl.textContent = "The answer is: ";
     initializeElements();
 
     var quizQuest = quiz[index];
@@ -67,15 +81,10 @@ function renderQuestion(index) {
         var a = document.createElement("a");
         a.setAttribute("href", "#");
         a.setAttribute("style", "background-color: lightskyblue; text-decoration: none; color: black;")
+        a.setAttribute("data-index", index);
         count++;
         a.textContent = count + ".  " + choice;
-        //li.textContent = choice;
         li.appendChild(a);
-        if (choice === quizQuest.answer) {
-            a.setAttribute("data-answer", "correct");
-        } else {
-            a.setAttribute("data-answer", "wrong");
-        }
         olEl.appendChild(li);
     } 
    
@@ -192,21 +201,26 @@ highScoreEl.addEventListener("click", function(event){
 });
 
 
-// Attach event listener to postscoreBtn element
+// Attach event listener to postscore button element
 postscoreBtn.addEventListener("click", function(event){
     event.preventDefault();
 
     var myInitials = document.querySelector("#initials-input").value; 
-
     if (myInitials === ""){
         alert("Initials can not be blank");
-    } else {
-        myInitials = myInitials.toUpperCase();
-        // store score to local storage
-        localStorage.setItem("initials", myInitials);
-        localStorage.setItem("score", timeLeft);
-        renderquizscores();
-    }
+        return;
+    } 
+
+    // Compare current score with saved score. Store the highest score
+    var highscore = localStorage.getItem("score");
+    if (highscore === null || highscore < timeLeft ){
+        highscore = timeLeft;  
+    } 
+ 
+    myInitials = myInitials.toUpperCase();
+    localStorage.setItem("initials", myInitials);
+    localStorage.setItem("score", highscore);
+    renderquizscores();
 
 });
 
@@ -219,17 +233,18 @@ olEl.addEventListener("click", function(event){
         return;
     }
        
-    var myanswer = element.dataset.answer; 
-       
-    // Subtract ten from timer for every wrong question 
-    if (myanswer === "wrong") {
+    var choice = element.innerHTML.trim();
+    var index = element.dataset.index; 
+
+    if (choice.includes(quiz[index].answer)){
+        messageEl.setAttribute("style", "color: green");
+        messageEl.textContent = "Correct!";
+    } else {
+        // Subtract ten from timer for every wrong question 
         timeLeft = timeLeft - 10;
         timerEl.innerHTML = timeText + timeLeft;
         messageEl.setAttribute("style", "color: red");
-        messageEl.textContent = myanswer;
-    } else {
-        messageEl.setAttribute("style", "color: green");
-        messageEl.textContent = myanswer + "!";
+        messageEl.textContent = "Wrong";
     }
 
     
