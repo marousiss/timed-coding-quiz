@@ -2,7 +2,7 @@
 
 ## Description
 
-A timed multiple choice coding Javascript quiz application that stores the highscores to guage the progress of the user.
+A timed multiple choice coding Javascript quiz application that stores the highscores to gauge the progress of the user.
 
 ## Installation
 
